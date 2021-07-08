@@ -1,14 +1,12 @@
-from typing import List
-
+from PyQt5.QtCore import (QObject,
+                          pyqtSignal)
 from dadata import Dadata
 
+from config import DadataConfig
 from entity import Entity
 
 
-TOKEN = '577e6e06ff78d3eaa2da1b750ddcabe7ee175f83'
-
 PARTY_NAME = 'party'
-REQUESTS_PER_SECOND = 10
 
 
 def entity_from_json(data: dict) -> Entity:
@@ -20,15 +18,24 @@ def entity_from_json(data: dict) -> Entity:
     )
 
 
-def get_entities_by_inn(inns: List[int], **filters) -> list[Entity]:
-    result = []
-    dadata = Dadata(TOKEN)
-    for inn in inns:
-        try:
-            response = dadata.find_by_id(PARTY_NAME, str(inn), **filters)
-            if response:
-                result.append(entity_from_json(response[0]))
-        except Exception:
-            pass
-    dadata.close()
-    return result
+class EntitiesByInnGetter(QObject):
+    inn_processed = pyqtSignal(int, int)  # INN, it
+
+    def __init__(self, inns: list[Entity], **filters):
+        super().__init__()
+        self._inns = inns
+        self._filters = filters
+
+    def __call__(self) -> list[Entity]:
+        result = []
+        dadata = Dadata(DadataConfig.TOKEN)
+        for it, inn in enumerate(self._inns):
+            self.inn_processed.emit(inn, it)
+            try:
+                response = dadata.find_by_id(PARTY_NAME, str(inn), **self._filters)
+                if response:
+                    result.append(entity_from_json(response[0]))
+            except Exception:
+                pass
+        dadata.close()
+        return result
