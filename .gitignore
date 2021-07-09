@@ -4,6 +4,10 @@
 # Data folders
 /templates/
 /output/
+/files/
 
 # Configs
 /dadata.json
+
+# Temp scripts
+/t.py
