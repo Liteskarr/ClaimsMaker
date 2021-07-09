@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>602</width>
-    <height>414</height>
+    <width>913</width>
+    <height>523</height>
    </rect>
   </property>
   <property name="font">
@@ -20,47 +20,8 @@
    <string>Конструктор претензий</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="0">
-    <widget class="QPushButton" name="choose_dir_button">
-     <property name="text">
-      <string>Выбрать результирующую директорию</string>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QPushButton" name="load_data_button">
-     <property name="text">
-      <string>Загрузить данные</string>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QPushButton" name="load_template_button">
-     <property name="text">
-      <string>Загрузить шаблон</string>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <spacer name="verticalSpacer">
+   <item row="5" column="1" colspan="3">
+    <spacer name="verticalSpacer_3">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -72,10 +33,10 @@
      </property>
     </spacer>
    </item>
-   <item row="11" column="0">
+   <item row="12" column="1" colspan="3">
     <widget class="QPushButton" name="print_result_button">
      <property name="text">
-      <string>Напечатать претензии</string>
+      <string>Напечатать</string>
      </property>
      <property name="checkable">
       <bool>false</bool>
@@ -85,11 +46,8 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLineEdit" name="template_line">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+   <item row="9" column="1" colspan="3">
+    <widget class="QLineEdit" name="dir_line">
      <property name="frame">
       <bool>false</bool>
      </property>
@@ -98,17 +56,20 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLineEdit" name="data_line">
-     <property name="frame">
+   <item row="6" column="1" colspan="3">
+    <widget class="QPushButton" name="choose_dir_button">
+     <property name="text">
+      <string>Выбрать папку для сохранения</string>
+     </property>
+     <property name="checkable">
       <bool>false</bool>
      </property>
-     <property name="readOnly">
-      <bool>true</bool>
+     <property name="autoExclusive">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="10" column="0">
+   <item row="10" column="1" colspan="3">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -121,8 +82,8 @@
      </property>
     </spacer>
    </item>
-   <item row="9" column="0">
-    <widget class="QLineEdit" name="dir_line">
+   <item row="4" column="1" colspan="3">
+    <widget class="QLineEdit" name="data_line">
      <property name="frame">
       <bool>false</bool>
      </property>
@@ -131,8 +92,47 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
-    <spacer name="verticalSpacer_3">
+   <item row="1" column="1" colspan="3">
+    <widget class="QLineEdit" name="template_line">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="frame">
+      <bool>false</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="3">
+    <widget class="QPushButton" name="load_data_button">
+     <property name="text">
+      <string>Загрузить данные</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="3">
+    <widget class="QPushButton" name="load_template_button">
+     <property name="text">
+      <string>Загрузить шаблон</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="3">
+    <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -143,6 +143,91 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="0" column="0" rowspan="13">
+    <widget class="QGroupBox" name="settings_group">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Настройки</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="0">
+       <widget class="QLabel" name="date_label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Дата</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="number_label">
+        <property name="text">
+         <string>Номер</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" colspan="3">
+       <spacer name="verticalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="QRadioButton" name="claim_radio">
+        <property name="text">
+         <string>Претензия</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="3">
+       <widget class="QRadioButton" name="request_radio">
+        <property name="text">
+         <string>Запрос</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="3">
+       <widget class="QRadioButton" name="claim_request_radio">
+        <property name="text">
+         <string>Претензия с запросом</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="number_line"/>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QLineEdit" name="date_line">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>
