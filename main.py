@@ -1,9 +1,16 @@
+"""
+Program entry point.
+"""
+
 from PyQt5.QtWidgets import (QApplication)
 
 from widgets.window import MainWindow
 
 
 def enable_threads_exceptions() -> None:
+    """
+    Enable exceptions in PyQt5 threads.
+    """
     import sys
     excepthook = sys.excepthook
 
