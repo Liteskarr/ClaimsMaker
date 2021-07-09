@@ -1,17 +1,14 @@
-from datetime import datetime
 from dataclasses import dataclass
+from decimal import Decimal
 
 
 @dataclass
 class Record:
-    Date: datetime
-    Number: int
-    BankId: int
-    CorrectionalAccount: int
-    TargetBank: str
-    TargetAccount: int
-    TargetName: str
-    TargetINN: int
-    Debit: float
-    Credit: float
+    Date: str
+    Number: str
+    Account: str
+    INN: str
+    Name: str
+    Debit: Decimal
+    Credit: Decimal
     Reason: str
