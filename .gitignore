@@ -1,0 +1,9 @@
+# System
+/venv/
+
+# Data folders
+/templates/
+/output/
+
+# Configs
+/dadata.json
