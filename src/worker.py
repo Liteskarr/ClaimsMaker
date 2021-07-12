@@ -14,11 +14,11 @@ class Worker(QObject):
         self._target = target
         self._args = args
         self._kwargs = kwargs
-        self.result = None
         self._thread: threading.Thread
+        self._result = None
 
     def _call_function(self):
-        self.result = self._target(*self._args, **self._kwargs)
+        self._result = self._target(*self._args, **self._kwargs)
 
     def run(self):
         """
@@ -37,4 +37,4 @@ class Worker(QObject):
         """
         Returns result of target if thread is finished else None.
         """
-        return self.result
+        return self._result
