@@ -2,6 +2,7 @@ from decimal import Decimal
 from itertools import count
 from functools import reduce
 from operator import or_
+from typing import Callable
 
 import openpyxl
 from openpyxl import load_workbook
@@ -44,6 +45,9 @@ class RecordsLoader(QObject):
         self._records = []
         self._errors = []
 
+    def apply_filter(self, func: Callable[[Record], bool]):
+        self._records = list(filter(func, self._records))
+
     def get_records(self) -> list[Record]:
         return self._records
 
@@ -63,6 +67,7 @@ class RecordsLoader(QObject):
                 for c in range(SettingsConfig.COLUMN_START, sheet.max_column + 1):
                     if c in labels.keys():
                         kwargs.update(KEYWORDS[labels[c]](sheet.cell(row=r, column=c).value))
-                self._records.append(Record(**kwargs))
+                if None not in set(kwargs.values()):
+                    self._records.append(Record(**kwargs))
             except:
-                self._errors.append(**kwargs)
+                self._errors.append(kwargs)
