@@ -17,14 +17,14 @@ class Worker(QObject):
         self._thread: threading.Thread
         self._result = None
 
-    def _call_function(self):
+    def _call_target(self):
         self._result = self._target(*self._args, **self._kwargs)
 
     def run(self):
         """
         Runs worker.
         """
-        self._thread = threading.Thread(target=self._call_function)
+        self._thread = threading.Thread(target=self._call_target)
         self._thread.start()
 
     def is_finished(self):
