@@ -13,4 +13,7 @@ class Entity:
     IsActive: bool
 
     def is_my_record(self, record: Record):
+        """
+        Returns True if Record relates to Entity else False.
+        """
         return self.INN == record.INN
