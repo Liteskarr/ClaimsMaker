@@ -32,11 +32,11 @@ class EntitiesByInnGetter(QObject):
         result = []
         dadata = Dadata(DadataConfig.TOKEN)
         for it, inn in enumerate(self._inns):
-            self.inn_processed.emit(inn, it)
             try:
                 response = dadata.find_by_id(PARTY_NAME, inn, **self._filters)
                 if response:
                     result.append(entity_from_json(response[0]))
+                    self.entity_processed.emit(result[-1], it, len(self._inns))
             except Exception:
                 pass
         dadata.close()
