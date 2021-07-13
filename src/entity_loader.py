@@ -21,12 +21,12 @@ class EntityLoader(QObject):
         """
         yield from (self._entities[inn] for inn in inns)
 
-    def update_from_dadata(self, inns: list[str]):
+    def update_from_dadata(self, inns: list[str], **filters):
         """
         For each INN updates Entity's data.
         :param inns: INNs.
         """
-        getter = EntitiesByInnGetter(inns)
+        getter = EntitiesByInnGetter(inns, **filters)
         getter.entity_processed.connect(self._handle_entity_processing)
         self._entities.update({e.INN: e for e in getter.process()})
         getter.entity_processed.disconnect(self._handle_entity_processing)
