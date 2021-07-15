@@ -5,7 +5,7 @@ from docxtpl import DocxTemplate
 from record import Record
 
 
-def build(records: List[Record], metadata: dict, template: DocxTemplate, output_path: str):
+def render(records: List[Record], metadata: dict, template: DocxTemplate, output_path: str):
     sum_debit = sum(map(lambda x: x.Debit, records))
     sum_credit = sum(map(lambda x: x.Credit, records))
     labels = ['Дата', '№', 'Номер счета', 'ИНН', 'Контрагент'] + (['Сумма по дебету'] if sum_debit else []) + \
@@ -24,8 +24,8 @@ def build(records: List[Record], metadata: dict, template: DocxTemplate, output_
         'date': metadata.get('date'),
         'address': metadata.get('address'),
         'name': metadata.get('name'),
-        'sum_debit': sum_debit,
-        'sum_credit': sum_credit
+        'sum_of_debit': sum_debit,
+        'sum_of_credit': sum_credit
     }
     template.render(context)
     template.save(output_path)
