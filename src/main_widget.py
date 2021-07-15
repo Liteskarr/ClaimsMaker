@@ -1,15 +1,15 @@
-from decimal import Decimal
 from datetime import datetime
+from decimal import Decimal
 
 from PyQt5.QtWidgets import (QWidget,
                              QFileDialog, QListWidgetItem)
 from PyQt5.uic import loadUi
 
-from background_process import BackgroundProcess, BackgroundProcessArgs
-from progress_dialog import ProgressDialog
-from config_dialog import ConfigDialog
-from entity import Entity
-from months import MONTHS
+from src.background_process import BackgroundProcess, BackgroundProcessArgs
+from src.config_dialog import ConfigDialog
+from src.entity import Entity
+from src.months import MONTHS
+from src.progress_dialog import ProgressDialog
 
 
 class MainWidget(QWidget):
@@ -68,7 +68,7 @@ class MainWidget(QWidget):
         self.date = self.date_line.text()
 
     def set_today_date(self):
-        self.date_line.setText(datetime.now().strftime(f'%d {MONTHS[datetime.now().month]} %Y') )
+        self.date_line.setText(datetime.now().strftime(f'%d {MONTHS[datetime.now().month]} %Y'))
         self.change_date()
 
     def change_number(self):

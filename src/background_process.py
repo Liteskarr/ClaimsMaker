@@ -1,15 +1,14 @@
-import os
 from dataclasses import dataclass
 from typing import Callable
 
 from PyQt5.QtCore import (pyqtSignal)
 
-from entity_loader import EntityLoader
-from records_loader import RecordsLoader
-from result_printer import ResultPrinter, ResultPrinterData
-from worker import Worker
-from record import Record
-from entity import Entity
+from src.entity import Entity
+from src.entity_loader import EntityLoader
+from src.record import Record
+from src.records_loader import RecordsLoader
+from src.result_printer import ResultPrinter, ResultPrinterData
+from src.worker import Worker
 
 
 @dataclass

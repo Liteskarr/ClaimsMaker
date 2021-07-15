@@ -7,8 +7,11 @@
 /files/
 
 # Configs
-/dadata.json
 /settings.json
 
+# Building
+/build/
+/dist/
+
 # Temp scripts
-/t.py
+/scripts/

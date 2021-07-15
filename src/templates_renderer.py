@@ -2,7 +2,7 @@ from typing import List
 
 from docxtpl import DocxTemplate
 
-from record import Record
+from src.record import Record
 
 
 def render(records: List[Record], metadata: dict, template: DocxTemplate, output_path: str):

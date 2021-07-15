@@ -1,18 +1,17 @@
 from datetime import datetime
 from decimal import Decimal
-from itertools import count
 from functools import reduce
+from itertools import count
 from operator import or_
 from typing import Callable
 
 import openpyxl
-from openpyxl import load_workbook
 from PyQt5.QtCore import (QObject,
                           pyqtSignal)
+from openpyxl import load_workbook
 
-from record import Record
-from config import MainConfig
-
+from src.config import MainConfig
+from src.record import Record
 
 KEYWORDS = {
     'ДАТА': lambda r: {'Date': r},
@@ -24,7 +23,6 @@ KEYWORDS = {
     'КРЕДИТ': lambda r: {'Credit': Decimal(r).quantize(Decimal('1.00')) if r else Decimal(0)},
     'ОСНОВАНИЕ': lambda r: {'Reason': r},
 }
-
 
 NoneRecord = Record(**reduce(or_, (func(None) for func in KEYWORDS.values()), {}))
 

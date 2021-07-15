@@ -2,10 +2,10 @@ from dataclasses import dataclass
 
 from PyQt5.QtCore import (QObject)
 
-from entity import Entity
-from record import Record
-from templates_builder import build_template
-from templates_renderer import render
+from src.entity import Entity
+from src.record import Record
+from src.templates_builder import build_template
+from src.templates_renderer import render
 
 
 @dataclass

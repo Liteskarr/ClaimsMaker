@@ -3,8 +3,8 @@ from typing import Iterator
 from PyQt5.QtCore import (QObject,
                           pyqtSignal)
 
-from entity import Entity
-from dadata_parser import EntitiesByInnGetter
+from src.dadata_parser import EntitiesByInnGetter
+from src.entity import Entity
 
 
 class EntityLoader(QObject):

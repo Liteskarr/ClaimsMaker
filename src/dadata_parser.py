@@ -2,9 +2,8 @@ from PyQt5.QtCore import (QObject,
                           pyqtSignal)
 from dadata import Dadata
 
-from config import MainConfig
-from entity import Entity
-
+from src.config import MainConfig
+from src.entity import Entity
 
 PARTY_NAME = 'party'
 
