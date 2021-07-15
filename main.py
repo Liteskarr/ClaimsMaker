@@ -4,7 +4,7 @@ Program entry point.
 
 from PyQt5.QtWidgets import (QApplication)
 
-from widgets.window import MainWindow
+from window import MainWindow
 
 
 def enable_threads_exceptions() -> None:
