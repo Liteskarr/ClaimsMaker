@@ -1,3 +1,4 @@
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QMainWindow)
 
 from widgets.main_widget import MainWidget
@@ -10,4 +11,5 @@ class MainWindow(QMainWindow):
 
     def _configure_ui(self):
         self.setWindowTitle('Конструктор претензий')
+        self.setWindowIcon(QIcon('res/icon.ico'))
         self.setCentralWidget(MainWidget())
