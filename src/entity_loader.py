@@ -19,7 +19,7 @@ class EntityLoader(QObject):
         For each INN returns Entity.
         :param inns: INNs.
         """
-        yield from (self._entities[inn] for inn in inns)
+        yield from (self._entities[inn] for inn in inns if inn in self._entities)
 
     def update_from_dadata(self, inns: list[str], **filters):
         """
@@ -29,7 +29,6 @@ class EntityLoader(QObject):
         getter = EntitiesByInnGetter(inns, **filters)
         getter.entity_processed.connect(self._handle_entity_processing)
         self._entities.update({e.INN: e for e in getter.process()})
-        getter.entity_processed.disconnect(self._handle_entity_processing)
 
     def _handle_entity_processing(self, entity: Entity, number: int, count: int):
         """
