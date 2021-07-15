@@ -25,7 +25,7 @@ class BackgroundProcessArgs:
 
 class BackgroundProcess(Worker):
     started = pyqtSignal()
-    file_read = pyqtSignal(str)  # Filename
+    record_read = pyqtSignal(str, int, int)  # filepath, number, count
     entity_processed = pyqtSignal(Entity, int, int)  # INN, number, count
     entity_printed = pyqtSignal(Entity, int, int)  # INN, number, count
     finished = pyqtSignal()
@@ -36,8 +36,8 @@ class BackgroundProcess(Worker):
     def _handle_starting(self):
         self.started.emit()
 
-    def _handle_file_reading(self, filename: str):
-        self.file_read.emit(filename)
+    def _handle_record_reading(self, filename: str, number: int, count: int):
+        self.record_read.emit(filename, number, count)
 
     def _handle_entity_processing(self, entity: Entity, number: int, count: int):
         self.entity_processed.emit(entity, number, count)
@@ -51,14 +51,14 @@ class BackgroundProcess(Worker):
     def _target(self, args: BackgroundProcessArgs):
         self._handle_starting()
         records_loader = RecordsLoader()
+        records_loader.record_read.connect(self._handle_record_reading)
         for path in args.DataFilepaths:
-            self._handle_file_reading(os.path.split(path)[-1])
             records_loader.load_from_xlsx(path)
         records_loader.apply_filter(args.Filter)
         records = records_loader.get_records()
         entity_loader = EntityLoader()
-        entity_loader.update_from_dadata(records_loader.get_inns(), **args.TypeFilter)
         entity_loader.entity_processed.connect(self._handle_entity_processing)
+        entity_loader.update_from_dadata(records_loader.get_inns(), **args.TypeFilter)
         entities = list(entity_loader.get_entities_by_inns(*records_loader.get_inns()))
         for number, entity in enumerate(entities, start=1):
             result_printer = ResultPrinter(ResultPrinterData(f'{args.NumberPrefix}/{number}',
