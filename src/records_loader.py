@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 from itertools import count
 from functools import reduce
@@ -6,10 +7,11 @@ from typing import Callable
 
 import openpyxl
 from openpyxl import load_workbook
-from PyQt5.QtCore import (QObject)
+from PyQt5.QtCore import (QObject,
+                          pyqtSignal)
 
 from record import Record
-from config import SettingsConfig
+from config import MainConfig
 
 
 KEYWORDS = {
@@ -31,7 +33,7 @@ def _find_labels(book: openpyxl.Workbook, sheet_name: str) -> dict[int, str]:
     result = {}
     sheet = book[sheet_name]
     for column in count(1):
-        label = sheet.cell(row=SettingsConfig.ROW_LABEL, column=column).value
+        label = sheet.cell(row=MainConfig.ROW_LABEL, column=column).value
         if label in KEYWORDS:
             result[column] = label
         elif not bool(label):
@@ -40,6 +42,8 @@ def _find_labels(book: openpyxl.Workbook, sheet_name: str) -> dict[int, str]:
 
 
 class RecordsLoader(QObject):
+    record_read = pyqtSignal(str, int, int)  # filepath, number, count
+
     def __init__(self):
         super().__init__()
         self._records = []
@@ -59,15 +63,20 @@ class RecordsLoader(QObject):
 
     def load_from_xlsx(self, filepath: str):
         book = load_workbook(filepath)
-        sheet = book[SettingsConfig.SHEET_NAME]
-        labels = _find_labels(book, SettingsConfig.SHEET_NAME)
-        for r in range(SettingsConfig.ROW_DATA, sheet.max_row + 1):
+        sheet = book[MainConfig.SHEET_NAME]
+        labels = _find_labels(book, MainConfig.SHEET_NAME)
+        for r in range(MainConfig.ROW_DATA, sheet.max_row + 1):
             kwargs = {}
             try:
-                for c in range(SettingsConfig.COLUMN_START, sheet.max_column + 1):
+                for c in range(MainConfig.COLUMN_START, sheet.max_column + 1):
                     if c in labels.keys():
-                        kwargs.update(KEYWORDS[labels[c]](sheet.cell(row=r, column=c).value))
+                        value = sheet.cell(row=r, column=c).value
+                        if isinstance(value, datetime):
+                            kwargs.update(KEYWORDS[labels[c]](value.strftime('%d.%m.%Y')))
+                        else:
+                            kwargs.update(KEYWORDS[labels[c]](value))
                 if None not in set(kwargs.values()):
                     self._records.append(Record(**kwargs))
+                    self.record_read.emit(filepath, r - 1, sheet.max_row)
             except:
                 self._errors.append(kwargs)
