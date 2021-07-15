@@ -15,23 +15,15 @@ class FileProvider(AbstractProvider):
         return self._settings.get(name, None)
 
 
-DadataProvider = FileProvider('dadata.json')
+MainProvider = FileProvider('settings.json')
 
 
-class _DadataConfig(Config):
-    TOKEN = field('TOKEN', provider=DadataProvider)
+class _MainConfig(Config):
+    SHEET_NAME = field('SHEET_NAME', provider=MainProvider)
+    COLUMN_START = field('COLUMN_START', provider=MainProvider, caster=to_int)
+    ROW_LABEL = field('ROW_LABEL', provider=MainProvider, caster=to_int)
+    ROW_DATA = field('ROW_DATA', provider=MainProvider, caster=to_int)
+    TOKEN = field('DADATA_TOKEN', provider=MainProvider)
 
 
-DadataConfig = _DadataConfig()
-
-SettingsProvider = FileProvider('settings.json')
-
-
-class _SettingsConfig(Config):
-    SHEET_NAME = field('SHEET_NAME', provider=SettingsProvider)
-    COLUMN_START = field('COLUMN_START', provider=SettingsProvider, caster=to_int)
-    ROW_LABEL = field('ROW_LABEL', provider=SettingsProvider, caster=to_int)
-    ROW_DATA = field('ROW_DATA', provider=SettingsProvider, caster=to_int)
-
-
-SettingsConfig = _SettingsConfig()
+MainConfig = _MainConfig()
