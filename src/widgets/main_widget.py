@@ -7,8 +7,10 @@ from PyQt5.QtWidgets import (QWidget,
 from PyQt5.uic import loadUi
 
 from background_process import BackgroundProcess, BackgroundProcessArgs
-from widgets.working_dialog import WorkingDialog
+from widgets.progress_dialog import ProgressDialog
+from widgets.config_dialog import ConfigDialog
 from entity import Entity
+from months import MONTHS
 
 
 class MainWidget(QWidget):
@@ -19,8 +21,8 @@ class MainWidget(QWidget):
     }
 
     ENTITIES_TYPE_FILTERS = {
-        'ИП': {'type': 'LEGAL'},
-        'ЮЛ': {'type': 'INDIVIDUAL'},
+        'ИП': {'type': 'INDIVIDUAL'},
+        'ЮЛ': {'type': 'LEGAL'},
         'ВСЕ': {}
     }
 
@@ -36,7 +38,7 @@ class MainWidget(QWidget):
         self.date = ''
         self.number = ''
         # Other widgets
-        self.dialog = WorkingDialog(self)
+        self.dialog = ProgressDialog(self)
         self._configure_ui()
         self.set_today_date()
 
@@ -48,6 +50,7 @@ class MainWidget(QWidget):
         self.delete_data_button.clicked.connect(self.delete_data)
         self.choose_dir_button.clicked.connect(self.choose_dir)
         self.print_result_button.clicked.connect(self.print_result)
+        self.config_button.clicked.connect(self._handle_config_opening)
         # Filters
         self.claim_radio.toggled.connect(lambda: self.change_filter(self.claim_radio.text()))
         self.request_radio.toggled.connect(lambda: self.change_filter(self.request_radio.text()))
@@ -66,9 +69,7 @@ class MainWidget(QWidget):
         self.date = self.date_line.text()
 
     def set_today_date(self):
-        locale.setlocale(locale.LC_ALL, 'ru_RU')
-        self.date_line.setText(datetime.now().strftime('%d %B %Y'))
-        locale.setlocale(locale.LC_ALL, 'en_EN')
+        self.date_line.setText(datetime.now().strftime(f'%d {MONTHS[datetime.now().month]} %Y') )
         self.change_date()
 
     def change_number(self):
@@ -106,15 +107,18 @@ class MainWidget(QWidget):
             self.dir_line.setText(self.dir_path)
         self._update_ui()
 
+    def _handle_config_opening(self):
+        ConfigDialog(self, 'settings.json').show()
+
     def _handle_starting(self):
         self.dialog.show()
         self.dialog.set_state('Начало работы', percent=0)
 
-    def _handle_file_reading(self, filename: str):
-        self.dialog.set_state(f'Чтение файла: {filename}', percent=50)
+    def _handle_record_reading(self, filename: str, number: int, count: int):
+        self.dialog.set_state(f'Чтение файла: {filename}', int(number / count * 100))
 
     def _handle_entity_processing(self, entity: Entity, number: int, count: int):
-        self.dialog.set_state(f'Сбора данных по ИНН: {entity.INN}', percent=int(100 * number / count))
+        self.dialog.set_state(f'Сбор данных по ИНН: {entity.INN}', percent=int(100 * number / count))
 
     def _handle_entity_printing(self, entity: Entity, number: int, count: int):
         self.dialog.set_state(f'Распечатка данных по ИНН: {entity.INN}', percent=int(100 * number / count))
@@ -130,11 +134,12 @@ class MainWidget(QWidget):
             self.dir_path,
             self.number,
             self.date,
-            self.current_filter
+            self.current_filter,
+            self.current_type_filter
         )
         process = BackgroundProcess(args)
         process.started.connect(self._handle_starting)
-        process.file_read.connect(self._handle_file_reading)
+        process.record_read.connect(self._handle_record_reading)
         process.entity_processed.connect(self._handle_entity_processing)
         process.entity_printed.connect(self._handle_entity_printing)
         process.finished.connect(self._handle_finishing)
