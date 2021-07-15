@@ -2,7 +2,7 @@ from PyQt5.QtCore import (QObject,
                           pyqtSignal)
 from dadata import Dadata
 
-from config import DadataConfig
+from config import MainConfig
 from entity import Entity
 
 
@@ -30,7 +30,7 @@ class EntitiesByInnGetter(QObject):
 
     def __call__(self) -> list[Entity]:
         result = []
-        dadata = Dadata(DadataConfig.TOKEN)
+        dadata = Dadata(MainConfig.TOKEN)
         for it, inn in enumerate(self._inns):
             try:
                 response = dadata.find_by_id(PARTY_NAME, inn, **self._filters)
