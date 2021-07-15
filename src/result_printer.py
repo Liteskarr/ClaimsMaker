@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 
-from PyQt5.QtCore import (QObject,
-                          pyqtSignal)
-from docxtpl import DocxTemplate
+from PyQt5.QtCore import (QObject)
 
 from entity import Entity
 from record import Record
-from template_builder import build
+from templates_builder import build_template
+from templates_renderer import render
 
 
 @dataclass
@@ -25,7 +24,8 @@ class ResultPrinter(QObject):
                      output_filepath: str,
                      entity: Entity,
                      records: list[Record]):
-        build(
+        model_template = build_template(template_filepath)
+        render(
             records,
             {
                 'number': self._data.Number,
@@ -33,6 +33,6 @@ class ResultPrinter(QObject):
                 'address': entity.Address,
                 'name': entity.FullName,
             },
-            DocxTemplate(template_filepath),
+            model_template,
             output_filepath
         )
