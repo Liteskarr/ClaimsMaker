@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from record import Record
+from src.record import Record
 
 
 @dataclass

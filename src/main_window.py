@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QMainWindow)
 
-from main_widget import MainWidget
+from src.main_widget import MainWidget
 
 
 class MainWindow(QMainWindow):
