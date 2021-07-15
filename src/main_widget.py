@@ -1,4 +1,3 @@
-import locale
 from decimal import Decimal
 from datetime import datetime
 
@@ -7,8 +6,8 @@ from PyQt5.QtWidgets import (QWidget,
 from PyQt5.uic import loadUi
 
 from background_process import BackgroundProcess, BackgroundProcessArgs
-from widgets.progress_dialog import ProgressDialog
-from widgets.config_dialog import ConfigDialog
+from progress_dialog import ProgressDialog
+from config_dialog import ConfigDialog
 from entity import Entity
 from months import MONTHS
 
