@@ -14,8 +14,10 @@
 2. [Шаблоны][Template]
 3. [Использование][Using]
 4. [Обратная связь][Credits]
+5. [Подготовка таблицы][Table]
 
 [Building]: ./building.md
 [Template]: ./template.md
 [Using]: ./using.md
 [Credits]: ./credits.md
+[Table]: ./table.md

@@ -6,5 +6,6 @@
 Рекомендую использовать github проекта и ссылки ниже для
 связи со мной.
 
-Email: 398501w@gmail.com </br>
-Вконтакте: https://vk.com/liseskarr </br>
+Email: 398501w@gmail.com
+
+Вконтакте: https://vk.com/liteskarr
