@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Optional
 
 from PyQt5.QtCore import (pyqtSignal)
 
@@ -27,6 +27,7 @@ class BackgroundProcess(Worker):
     record_read = pyqtSignal(str, int, int)  # filepath, number, count
     entity_processed = pyqtSignal(Entity, int, int)  # INN, number, count
     entity_printed = pyqtSignal(Entity, int, int)  # INN, number, count
+    error = pyqtSignal(str)  # Message
     finished = pyqtSignal()
 
     def __init__(self, args: BackgroundProcessArgs):
@@ -44,6 +45,9 @@ class BackgroundProcess(Worker):
     def _handle_entity_printing(self, entity: Entity, number: int, count: int):
         self.entity_printed.emit(entity, number, count)
 
+    def _handle_error(self, message: str):
+        self.error.emit(message)
+
     def _handle_finishing(self):
         self.finished.emit()
 
@@ -52,22 +56,31 @@ class BackgroundProcess(Worker):
         records_loader = RecordsLoader()
         records_loader.record_read.connect(self._handle_record_reading)
         for path in args.DataFilepaths:
-            records_loader.load_from_xlsx(path)
+            try:
+                records_loader.load_from_xlsx(path)
+            except BaseException:
+                return self._handle_error(f'Ошибка при чтении файла: {path}')
         records_loader.apply_filter(args.Filter)
         records = records_loader.get_records()
         entity_loader = EntityLoader()
         entity_loader.entity_processed.connect(self._handle_entity_processing)
-        entity_loader.update_from_dadata(records_loader.get_inns(), **args.TypeFilter)
+        try:
+            entity_loader.update_from_dadata(records_loader.get_inns(), **args.TypeFilter)
+        except BaseException:
+            return self._handle_error(f'Ошибка при обновлении данных об организациях!')
         entities = list(entity_loader.get_entities_by_inns(*records_loader.get_inns()))
         for number, entity in enumerate(entities, start=1):
             result_printer = ResultPrinter(ResultPrinterData(f'{args.NumberPrefix}/{number}',
                                                              args.Date))
-            e_records: list[Record] = list(filter(entity.is_my_record, records))
-            self._handle_entity_printing(entity, number, len(entities))
-            result_printer.print_entity(
-                args.TemplateFilepath,
-                f'{args.OutputDirpath}/{entity.INN}.docx',
-                entity,
-                e_records
-            )
+            try:
+                e_records: list[Record] = list(filter(entity.is_my_record, records))
+                self._handle_entity_printing(entity, number, len(entities))
+                result_printer.print_entity(
+                    args.TemplateFilepath,
+                    f'{args.OutputDirpath}/{entity.INN}.docx',
+                    entity,
+                    e_records
+                )
+            except BaseException:
+                return self._handle_error('Ошибка при распечатке данных!')
         self._handle_finishing()

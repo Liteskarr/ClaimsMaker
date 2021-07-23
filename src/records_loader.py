@@ -63,6 +63,8 @@ class RecordsLoader(QObject):
         book = load_workbook(filepath)
         sheet = book[MainConfig.SHEET_NAME]
         labels = _find_labels(book, MainConfig.SHEET_NAME)
+        if len(labels) != len(KEYWORDS):
+            raise ValueError('Invalid file!')
         for r in range(MainConfig.ROW_DATA, sheet.max_row + 1):
             kwargs = {}
             try:

@@ -2,7 +2,9 @@ from datetime import datetime
 from decimal import Decimal
 
 from PyQt5.QtWidgets import (QWidget,
-                             QFileDialog, QListWidgetItem)
+                             QFileDialog,
+                             QListWidgetItem,
+                             QMessageBox)
 from PyQt5.uic import loadUi
 
 from src.background_process import BackgroundProcess, BackgroundProcessArgs
@@ -122,6 +124,15 @@ class MainWidget(QWidget):
     def _handle_entity_printing(self, entity: Entity, number: int, count: int):
         self.dialog.set_state(f'Распечатка данных по ИНН: {entity.INN}', percent=int(100 * number / count))
 
+    def _handle_error(self, message: str):
+        self._handle_finishing()
+        message_box = QMessageBox(self)
+        message_box.setIcon(QMessageBox.Critical)
+        message_box.setWindowTitle('Ошибка!')
+        message_box.setText('При выполнении операции произошла ошибка!')
+        message_box.setInformativeText(message)
+        message_box.exec()
+
     def _handle_finishing(self):
         self.dialog.set_state('', percent=0)
         self.dialog.hide()
@@ -141,6 +152,7 @@ class MainWidget(QWidget):
         process.record_read.connect(self._handle_record_reading)
         process.entity_processed.connect(self._handle_entity_processing)
         process.entity_printed.connect(self._handle_entity_printing)
+        process.error.connect(self._handle_error)
         process.finished.connect(self._handle_finishing)
         process.run()
 
