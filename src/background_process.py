@@ -15,7 +15,7 @@ from src.worker import Worker
 class BackgroundProcessArgs:
     DataFilepaths: list[str]
     TemplateFilepath: str
-    OutputDirpath: str
+    OutputDirPath: str
     NumberPrefix: str
     Date: str
     Filter: Callable[[Record], bool]
@@ -58,16 +58,16 @@ class BackgroundProcess(Worker):
         for path in args.DataFilepaths:
             try:
                 records_loader.load_from_xlsx(path)
-            except BaseException:
-                return self._handle_error(f'Ошибка при чтении файла: {path}')
+            except BaseException as e:
+                return self._handle_error(f'Ошибка при чтении файла: {path}\n{e}')
         records_loader.apply_filter(args.Filter)
         records = records_loader.get_records()
         entity_loader = EntityLoader()
         entity_loader.entity_processed.connect(self._handle_entity_processing)
         try:
             entity_loader.update_from_dadata(records_loader.get_inns(), **args.TypeFilter)
-        except BaseException:
-            return self._handle_error(f'Ошибка при обновлении данных об организациях!')
+        except BaseException as e:
+            return self._handle_error(f'Ошибка при обновлении данных об организациях!\n{e}')
         entities = list(entity_loader.get_entities_by_inns(*records_loader.get_inns()))
         for number, entity in enumerate(entities, start=1):
             result_printer = ResultPrinter(ResultPrinterData(f'{args.NumberPrefix}/{number}',
@@ -77,10 +77,10 @@ class BackgroundProcess(Worker):
                 self._handle_entity_printing(entity, number, len(entities))
                 result_printer.print_entity(
                     args.TemplateFilepath,
-                    f'{args.OutputDirpath}/{entity.INN}.docx',
+                    f'{args.OutputDirPath}/{entity.INN}.docx',
                     entity,
                     e_records
                 )
-            except BaseException:
-                return self._handle_error('Ошибка при распечатке данных!')
+            except BaseException as e:
+                return self._handle_error(f'Ошибка при распечатке данных!\n{e}')
         self._handle_finishing()

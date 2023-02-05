@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
 from functools import reduce
 from itertools import count
@@ -19,8 +19,8 @@ KEYWORDS = {
     'СЧЕТ': lambda r: {'Account': r},
     'ИНН': lambda r: {'INN': r},
     'ИМЯ': lambda r: {'Name': r},
-    'ДЕБЕТ': lambda r: {'Debit': Decimal(r).quantize(Decimal('1.00')) if r else Decimal(0)},
-    'КРЕДИТ': lambda r: {'Credit': Decimal(r).quantize(Decimal('1.00')) if r else Decimal(0)},
+    'ДЕБЕТ': lambda r: {'Debit': Decimal(r.replace(',', '.')).quantize(Decimal('1.00')) if r else Decimal(0)},
+    'КРЕДИТ': lambda r: {'Credit': Decimal(r.replace(',', '.')).quantize(Decimal('1.00')) if r else Decimal(0)},
     'ОСНОВАНИЕ': lambda r: {'Reason': r},
 }
 
@@ -64,7 +64,9 @@ class RecordsLoader(QObject):
         sheet = book[MainConfig.SHEET_NAME]
         labels = _find_labels(book, MainConfig.SHEET_NAME)
         if len(labels) != len(KEYWORDS):
-            raise ValueError('Invalid file!')
+            raise ValueError(f'Не найдены требуемые заголовки:\n'
+                             f'Необходимые: {KEYWORDS.keys()}\n'
+                             f'Существующие: {labels.values()}')
         for r in range(MainConfig.ROW_DATA, sheet.max_row + 1):
             kwargs = {}
             try:
@@ -78,5 +80,6 @@ class RecordsLoader(QObject):
                 if None not in set(kwargs.values()):
                     self._records.append(Record(**kwargs))
                     self.record_read.emit(filepath, r - 1, sheet.max_row)
-            except:
+            except Exception as e:
+                print(e)
                 self._errors.append(kwargs)
